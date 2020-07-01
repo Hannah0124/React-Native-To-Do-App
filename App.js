@@ -1,12 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, Button, TextInput, ScrollView, FlatList } from 'react-native'; // FlatList: infinite view
+import { StyleSheet, Text, View, Button, FlatList } from 'react-native'; // FlatList: infinite view
 
 import GoalItem from './components/GoalItem';
 import GoalInput from './components/GoalInput';
 
 export default function App() {
   const [courseGoals, setCourseGoals] = useState([]);
+  const [isAddMode, setIsAddMode] = useState(false);
 
   const addGoalHandler = (goalTitle) => {
     // setCourseGoals([...courseGoals, enteredGoal]); // [previousState, newState]
@@ -17,6 +18,8 @@ export default function App() {
         value: goalTitle
       }
     ]);
+
+    cancelGoalAdditionHandler();
   };
 
   const removeGoalHandler = goalId => {
@@ -25,9 +28,18 @@ export default function App() {
     });
   };
 
+  const cancelGoalAdditionHandler = () => {
+    setIsAddMode(false);
+  };
+
   return (
     <View style={styles.screen}>
-      <GoalInput onAddGoal={addGoalHandler}/>
+      <Button title="Add New Goal" onPress={() => setIsAddMode(true)}/>
+      <GoalInput 
+        visible={isAddMode} 
+        onAddGoal={addGoalHandler}
+        onCancel={cancelGoalAdditionHandler}
+      />
 
       <FlatList 
         keyExtractor={(item, index) => item.id}
